@@ -1,0 +1,59 @@
+ #include <iostream>
+#include <fstream>
+#include <vector>
+
+using namespace std;
+class LabelGenerator{
+protected:
+    string Pstring;
+    int cnt;
+public:
+    LabelGenerator():Pstring(""),cnt(0){}
+    LabelGenerator(string Pstring,int cnt):Pstring(Pstring),cnt(cnt){}
+    string nextLabel()
+    {
+        return " "+Pstring+to_string(cnt++);
+    }
+};
+class FileLabelGenerator:public LabelGenerator{
+    string filename;
+    vector<string>captions;
+    int i=0;
+public:
+    FileLabelGenerator():LabelGenerator(),filename(""){}
+    FileLabelGenerator(string Pstring,int cnt,string filename):LabelGenerator(Pstring,cnt),filename(filename){}
+    void readfile()
+    {
+        ifstream Fin(filename);
+        if(Fin.fail()) {cout<<"This File Does Not Exist!";return;}
+        string in;
+        while (getline(Fin,in)) {
+            captions.push_back(in);
+        }
+    }
+    string nextLabel()
+    {
+        if(!captions.empty()&&i+1>captions.size()) return Pstring+to_string(cnt++)+" "+".........";
+        if(!captions.empty()) return Pstring+to_string(cnt++)+" "+captions[i++];
+    }
+
+};
+int main()
+{
+    LabelGenerator figureNumbers("Figure ", 1);
+    LabelGenerator pointNumbers("P", 0);
+    cout << "Figure numbers: ";
+    for (int i = 0; i < 3; i++) {
+        cout << figureNumbers.nextLabel() << ", "[i+1==3];
+    }
+    cout << endl << "Point numbers: ";
+    for (int i = 0; i < 5; i++) {
+        cout << pointNumbers.nextLabel() << ", "[i+1==5];
+    }
+    cout<<endl;
+    FileLabelGenerator figureLabels ("Figure ", 1, "labels.txt");
+    figureLabels.readfile();
+    cout << "\nFigure labels: \n";
+    for (int i = 0; i < 3; i++)
+        cout << figureLabels.nextLabel() << '.'<<endl;
+}
