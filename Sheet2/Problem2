@@ -1,0 +1,145 @@
+#include <iostream>
+#include <vector>
+#include <fstream>
+#include <algorithm>
+#include <cctype>
+#include <cmath>
+using namespace std;
+
+class StringSet {
+public:
+    StringSet(string data);
+    vector<string> query;
+    void addstring(string newstring);
+    void removestring(string newstring);
+    void clearset();
+    int num_of_strings();
+    void display_strings();
+    StringSet operator+(const StringSet &c2);
+    StringSet operator*(const StringSet &c2);
+    float Similarity(StringSet &c2);
+};
+
+StringSet::StringSet(string data) {
+    vector<string> notUnique;
+    ifstream file(data);
+    if (file.is_open()) {
+        string line;
+        while (getline(file, line)) {
+            string currentWord;
+            for (char c : line) {
+                c = tolower(c);
+                if (isalnum(c))
+                {
+                    currentWord += c;
+                }
+                else if (!currentWord.empty())
+                {
+                    notUnique.push_back(currentWord);
+                    currentWord.clear();
+                }
+            }
+            if (!currentWord.empty()) {
+                notUnique.push_back(currentWord);
+            }
+        }
+    }
+     else {
+        string currentWord;
+        for (char c : data)
+        {
+        c = tolower(c);
+        if (isalnum(c))
+        {
+            currentWord += c;
+        }
+        else if (!currentWord.empty())
+        {
+            notUnique.push_back(currentWord);
+            currentWord.clear();
+        }
+        }
+        if (!currentWord.empty())
+        {
+            notUnique.push_back(currentWord);
+        }
+    }
+
+    for (auto word : notUnique)
+    {
+      if (std::find(query.begin(), query.end(), word) == query.end())
+      {
+          query.push_back(word);
+      }
+    }
+}
+void StringSet::addstring(string newstring){
+    query.push_back(newstring);
+}
+void StringSet::removestring(string newstring) {
+    auto it = std::find(query.begin(), query.end(), newstring);
+    if (it != query.end()) {
+        query.erase(it);
+    } else {
+        cout << "This word is not found!";
+    }
+}
+void StringSet::clearset(){
+    query.clear();
+}
+int StringSet::num_of_strings(){return (int)query.size();}
+void StringSet::display_strings(){
+    for(const auto &word:query) cout<<word<<' ';
+}
+StringSet StringSet::operator+(const StringSet &c2){
+    StringSet c1=*this;
+    for (auto word : c2.query)
+    {
+      if (std::find(c1.query.begin(), c1.query.end(), word) == c1.query.end())
+      {
+          c1.query.push_back(word);
+      }
+    }
+    return c1;
+}
+StringSet StringSet::operator*(const StringSet &c2){
+    StringSet c1=*this;
+    vector<string>temp;
+    for (auto word : c2.query)
+    {
+      if (std::find(c1.query.begin(), c1.query.end(), word) == c1.query.end()){}
+      else {
+         temp.push_back(word);
+      }
+    }
+    c1.query=temp;
+    return c1;
+}
+float StringSet::Similarity(StringSet &c2){
+    StringSet c1=*this;
+    float sq1=sqrt(c1.query.size()),sq2=sqrt(c2.query.size());
+    c1=c1*c2;
+    int common=c1.query.size();
+    return (float)common/(sq1*sq2);
+}
+
+int main() {
+    StringSet c1("example.txt"),c2("example.txt");
+    c1.display_strings();
+    c1.clearset();
+    c1.addstring("mohamed");
+    c1.display_strings();
+    cout<<'\n'<<c1.num_of_strings()<<'\n';
+    c1.removestring("mohamed");
+    c1.addstring("atef");
+    c1=c1+c2;
+    c1.display_strings();
+    c1=c1*c2;
+    cout<<'\n';c1.display_strings();
+    cout<<'\n';
+    c2.addstring("atef");
+    c2.display_strings();
+    cout<<'\n'<<c1.Similarity(c2);
+
+    return 0;
+}
