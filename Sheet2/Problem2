@@ -1,0 +1,56 @@
+#include <iostream>
+#include <map>
+#include <fstream>
+#include <vector>
+using namespace std;
+class Freq{
+    string filename;
+    map<string,int>mp;
+    vector<string>v1,v2;
+public:
+    Freq():filename(""){}
+    Freq(string filename):filename(filename){}
+    void readfile()
+    {
+        ifstream Fin(filename);
+        if(Fin.fail()) {cout<<"This File Does Not Exist!";return;}
+        string in;
+        while (Fin>>in) {
+            v1.push_back(in);
+        }
+    }
+    void filtration(){
+        for(int i=0;i<(int)v1.size();i++){
+            string s{""};
+            for(int j=0;j<v1[i].size();j++)
+            {
+                if(v1[i][j]>='a'&&v1[i][j]<='z') s+=v1[i][j];
+                else if(v1[i][j]>='A'&&v1[i][j]<='Z') s+=(char)(v1[i][j]+32);
+                else if(v1[i][j]>='1'&&v1[i][j]<='9') s+=v1[i][j];
+                else if(v1[i][j]=='-') s+=v1[i][j];
+            }
+            if(!s.empty()) v2.push_back(s);
+        }
+    }
+    void cntfreq(){
+        for(int i=0;i<(int)v2.size();i++)
+        {
+            mp[v2[i]]++;
+        }
+    }
+    void display_freq(){
+        for(auto it:mp)
+            cout<<"word: "<<it.first<<" Frequency: "<<it.second<<'\n';
+    }
+
+};
+int main()
+{
+    cout<<"Enter the name of the file please: ";
+    string filename;cin>>filename;
+    Freq obj(filename);
+    obj.readfile();
+    obj.filtration();
+    obj.cntfreq();
+    obj.display_freq();
+}
