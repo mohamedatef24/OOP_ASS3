@@ -1,0 +1,80 @@
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+template<typename T>
+class Set {
+private:
+    vector<T> items;
+public:
+    Set() {}
+    ~Set() {}
+    bool isEmpty() const {
+        return items.empty();
+    }
+    size_t Number_of_items() const {
+        return items.size();
+    }
+    void add(const T& item) {
+        if (!is_member(item)) {
+            items.push_back(item);
+        }
+    }
+    void remove(const T& item) {
+        auto it = std::find(items.begin(), items.end(), item);
+        if (it != items.end()) {
+            items.erase(it);
+        }
+        else {
+            cout<<"the item "<<item <<" already removed!\n";
+        }
+    }
+    bool is_member(const T& item) const {
+        return std::find(items.begin(), items.end(), item) != items.end();
+    }
+    void clear() {
+        items.clear();
+    }
+    T* toArray() const {
+        T* arr = new T[items.size()];
+        for (size_t i = 0; i < items.size(); ++i) {
+            arr[i] = items[i];
+        }
+        return arr;
+    }
+     bool operator==(const Set<T>& otherSet) const {
+        if (items.size() != otherSet.items.size()) {
+            return false;
+        }
+        vector<T> sortedItems = items;
+        vector<T> otherSortedItems = otherSet.items;
+        sort(sortedItems.begin(), sortedItems.end());
+        sort(otherSortedItems.begin(), otherSortedItems.end());
+
+        return sortedItems == otherSortedItems;
+    }
+    bool operator!=(const Set<T>& otherSet) const {
+        return !(*this == otherSet);
+    }
+
+};
+
+int main()
+{
+    Set<int> intSet;
+    intSet.add(5);
+    intSet.add(10);
+    intSet.add(15);
+    intSet.add(15);
+    cout << "Number of items in the set: " << intSet.Number_of_items() << endl;
+    intSet.remove(10);
+    intSet.remove(20); // Trying to remove an item not in the set
+    cout << "Number of items in the set after removal: " << intSet.Number_of_items() << endl;
+    int* arrayPtr = intSet.toArray();
+    cout << "Elements in the dynamically created array: ";
+    for (size_t i = 0; i < intSet.Number_of_items(); ++i) { // Display the elements in the dynamically created array
+        cout << arrayPtr[i] << " ";
+    }
+    cout << '\n';
+    delete[] arrayPtr;
+}
