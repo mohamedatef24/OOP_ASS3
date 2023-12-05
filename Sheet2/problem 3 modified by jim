@@ -1,0 +1,63 @@
+#include <iostream>
+#include <map>
+#include <fstream>  //to open and close files
+#include <vector>
+#include <cctype>
+using namespace std;
+class Freq{
+    string filename;    //for the entered txt file
+    map<string,int>myMap;
+    vector<string>v1,v2;    //filtered and validated filtered respectively
+public:
+
+    Freq():filename(""){}   //construction initializing empty string
+    Freq(string filename):filename(filename){}
+    void readfile()
+    {
+        ifstream openFile(filename);    //opening txt file
+        if(!openFile.is_open()) {
+            cerr<<"This File Does Not Exist!";
+            return; //ending function
+        }
+        string tempWord;    //initializing the temporary word that I'm gonna push into my vector
+        while (openFile>>tempWord) {  //reading each words using ">>" operator then pushing it "tempWord" into v1
+            v1.push_back(tempWord);
+        }
+    }
+    void filtration() {
+        for (int i = 0; i < v1.size(); i++) {
+            string filtered{""};
+            for (int j = 0; j < v1[i].size(); j++) {
+                char currentChar = v1[i][j];
+                if (isalnum(currentChar) || currentChar == '-') {   //isalnum checks if alphanumeric
+                    filtered += tolower(currentChar);//converting to lower (which we'll need later in counter)
+                }
+            }
+            if (!filtered.empty()) {
+                v2.push_back(filtered); //adding the valid words inside validFiltered
+            }
+        }
+    }
+    void cntFreq(){ //iterating over each word in v2
+        for(int i=0;i<v2.size();i++)
+        {
+            myMap[v2[i]]++;   //incrementing the current word counter +1
+        }
+    }
+    void display_freq(){
+        for(auto it:myMap)    //showing each word and it's counter(frequency)
+            cout<<"word: "<<it.first<<" Frequency: "<<it.second<<'\n';
+    }       //.first for the word & .second is for the counter
+
+};
+int main()
+{
+    cout<<"Enter the name of the file please: ";
+    string filename;
+    cin>>filename;
+    Freq obj(filename); //creating class object and passing the entered file name so it cna be processed
+    obj.readfile();
+    obj.filtration();
+    obj.cntFreq();
+    obj.display_freq();  //calling my functions then finally displaying them.
+}
