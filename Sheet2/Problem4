@@ -18,6 +18,7 @@ public:
     void add(const T& item) {
         if (!is_member(item)) {
             items.push_back(item);
+            sort(items.begin(),items.end());
         }
     }
     void remove(const T& item) {
@@ -42,7 +43,7 @@ public:
         }
         return arr;
     }
-     bool operator==(const Set<T>& otherSet) const {
+    bool operator==(const Set<T>& otherSet) const {
         if (items.size() != otherSet.items.size()) {
             return false;
         }
@@ -62,9 +63,9 @@ public:
 int main()
 {
     Set<int> intSet;
-    intSet.add(5);
-    intSet.add(10);
     intSet.add(15);
+    intSet.add(10);
+    intSet.add(5);
     intSet.add(15);
     cout << "Number of items in the set: " << intSet.Number_of_items() << endl;
     intSet.remove(10);
