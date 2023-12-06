@@ -1,0 +1,101 @@
+// File name: A3_Sheet2Pb6_20221119.cpp
+// Purpose: Problem (6)--> Game of life
+// Author(s): Mohammed Gamal Abd El Nasser
+// ID(s):20221119
+// Section: s23
+// Date:7/12/2023
+//TA: Eng. Mohammed talaat
+
+#include <iostream>
+using namespace std;
+
+const int W = 5;
+const int H = 5;
+
+class Universe {
+public:
+    array<array<int, H>, W> OriginalGen{}; //Game grid of 2 array. int for 0 or 1(alive or dead cell) and OriginalGen are initialized with zeros{}
+    void initialize() {
+        srand(time(0)); //srand(seeding) is for implementing different values for each run.
+        for (int i = 0; i < W; ++i) {
+            for (int j = 0; j < H; ++j) {
+                OriginalGen[i][j] = rand() % 2; //to generate either 0 or 1.
+            }
+        }
+    }
+    
+    int count_neighbors(int x,int y) {
+        int alive = 0;
+
+        //check on left if it's a cell or not(out of boundries ) and checks if it's alive.
+        if (x > 0 && OriginalGen[x - 1][y] == 1) alive += 1;
+        //check right ...
+        if (x < W - 1 && OriginalGen[x + 1][y] == 1) alive += 1;
+        //check top ...
+        if (y > 0 && OriginalGen[x][y - 1] == 1) alive += 1;
+        //check bottom ...
+        if (y < H - 1 && OriginalGen[x][y + 1] == 1) alive += 1;
+        //check top left if the upper and the left points are OriginalGen or not then checks status of being alive.
+        if (x > 0 && y > 0 && OriginalGen[x - 1][y - 1] == 1) alive += 1;
+        //check top right ...
+        if (x < W - 1 && y > 0 && OriginalGen[x + 1][y - 1] == 1) alive += 1;
+        //check bottom left ...
+        if (x > 0 && y < H - 1 && OriginalGen[x - 1][y + 1] == 1) alive += 1;
+        //check bottom right ...
+        if (x < W - 1 && y < H - 1 && OriginalGen[x + 1][y + 1] == 1) alive += 1;
+
+        return alive; //returning counter of alive neighbors around the current cell
+    }
+    
+    bool isAlive(const int x, const int y) {
+        int alive = count_neighbors(x, y);
+        
+        //alive and less than 2 OriginalGen die
+        if (OriginalGen[x][y] == 1 && alive < 2)
+            return false;
+        //alive and 2 or 3 OriginalGen lives
+        if (OriginalGen[x][y] == 1 && (alive == 2 || alive == 3))
+            return true;
+        //more than 3 OriginalGen dies
+        if (alive > 3)
+            return false;
+        //3 alive and point is dead then this point will be resurrected.
+        if (OriginalGen[x][y] == 0 && alive == 3)
+            return true;
+        
+        return false; //cell is dead
+    }
+
+    void next_generation() {
+        array<array<int, H>, W> newGen{};//same as the first 2d array but made for the next generation as a temp/buffer till it's copied back to the original array.
+        for (int i = 0; i < W; ++i) {
+            for (int j = 0; j < H; ++j) {
+                newGen[i][j] = isAlive(i, j);
+            }
+        }
+        OriginalGen = newGen;
+    }
+
+    void display() {
+        for (int i = 0; i < W; ++i) {
+            for (int j = 0; j < H; ++j) {
+                cout << (OriginalGen[i][j] ? '*' : '-');//if true '*' is entered if false '-' is entered(osama el zero top el top).
+            }
+            cout << endl; //to write the new row in another line.
+        }
+        cout<<"============"<<endl;
+    }
+
+    void run(int nGen) {    //number of generetion to be passed.
+        for (int gen = 0; gen < nGen; ++gen) {
+            display();
+            next_generation();
+        }
+    }       //calling display and the next generation..
+};
+
+int main() {
+    Universe game;
+    game.initialize();
+    game.run(30);
+}
