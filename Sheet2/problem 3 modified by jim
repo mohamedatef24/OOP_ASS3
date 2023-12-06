@@ -1,3 +1,11 @@
+// File name: A3_Sheet2Pb3_20221119.cpp
+// Purpose: Problem (3)--> STL – Map for counting the number of repeated words in a document after filteration with alphanumeric
+// Author(s): Mohammed Gamal Abd El Nasser
+// ID(s):20221119
+// Section: s23
+// Date:7/12/2023
+//TA: Eng. Mohammed talaat
+
 #include <iostream>
 #include <map>
 #include <fstream>  //to open and close files
