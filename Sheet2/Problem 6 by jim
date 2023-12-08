@@ -7,10 +7,11 @@
 //TA: Eng. Mohammed talaat
 
 #include <iostream>
+#include<array>
 using namespace std;
 
-const int W = 5;
-const int H = 5;
+const int W = 20;
+const int H = 20;
 
 class Universe {
 public:
@@ -23,7 +24,7 @@ public:
             }
         }
     }
-    
+
     int count_neighbors(int x,int y) {
         int alive = 0;
 
@@ -46,10 +47,10 @@ public:
 
         return alive; //returning counter of alive neighbors around the current cell
     }
-    
+
     bool isAlive(const int x, const int y) {
         int alive = count_neighbors(x, y);
-        
+
         //alive and less than 2 OriginalGen die
         if (OriginalGen[x][y] == 1 && alive < 2)
             return false;
@@ -62,7 +63,7 @@ public:
         //3 alive and point is dead then this point will be resurrected.
         if (OriginalGen[x][y] == 0 && alive == 3)
             return true;
-        
+
         return false; //cell is dead
     }
 
@@ -72,6 +73,10 @@ public:
             for (int j = 0; j < H; ++j) {
                 newGen[i][j] = isAlive(i, j);
             }
+        }
+        if (newGen == OriginalGen) {
+            cout << "cells are stable or all dead." << endl;
+            exit(0); //exists from running code when condition is true
         }
         OriginalGen = newGen;
     }
@@ -90,6 +95,7 @@ public:
         for (int gen = 0; gen < nGen; ++gen) {
             display();
             next_generation();
+            _sleep(1000);//this is optional for me so my i can see each generation wi 1000 milisec. delay.
         }
     }       //calling display and the next generation..
 };
@@ -99,3 +105,4 @@ int main() {
     game.initialize();
     game.run(30);
 }
+
