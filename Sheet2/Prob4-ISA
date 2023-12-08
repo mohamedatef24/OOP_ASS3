@@ -5,3 +5,101 @@
 // Section: S24
 // Date:7/12/2023
 //TA: Eng. Mohammed talaat
+
+#include <iostream>
+#include <fstream>
+#include <cstring>
+#include <cmath>
+#include <string>
+#include <iterator>
+#include <map>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+template<typename T>
+class Set {
+private:
+    vector<T> items; // Create a vector to store items of type T
+public:
+    Set() {}
+    ~Set() {}
+
+    bool isEmpty() const { // function to check if the set is empty
+        return items.empty();
+    }
+
+    void add(const T& item) { // function to add items to the set
+        if (!is_member(item)) { //to check if the item already exists in the set , if it exists then nothing happens
+            items.push_back(item);
+            sort(items.begin(),items.end());
+        }
+    }
+    void remove(const T& item) { // function to remove items from the set
+        auto it = std::find(items.begin(), items.end(), item);
+        if (it != items.end()) {
+            items.erase(it);
+        }
+        else {
+            cout<<"The item "<<item <<" is not found or has already been removed.\n";
+        }
+    }
+
+    size_t Number_of_items() const { // function to display the number of items of the set
+        return items.size();
+    }
+
+    bool is_member(const T& item) const { // function to check if an element exists in the set or not
+        return std::find(items.begin(), items.end(), item) != items.end();
+    }
+
+    T* toArray() const { // function that adds all items found in the set to a dynamic array
+        T* arr = new T[items.size()];
+        for (size_t i = 0; i < items.size(); ++i) {
+            arr[i] = items[i];
+        }
+        return arr;
+    }
+
+    void clear() { // function that clears all items in the set
+        items.clear();
+    }
+
+    bool operator==(const Set<T>& otherSet) const {
+        if (items.size() != otherSet.items.size()) {
+            return false;
+        }
+        vector<T> sortedItems = items;
+        vector<T> otherSortedItems = otherSet.items;
+        sort(sortedItems.begin(), sortedItems.end());
+        sort(otherSortedItems.begin(), otherSortedItems.end());
+
+        return sortedItems == otherSortedItems;
+    }
+    bool operator!=(const Set<T>& otherSet) const { //overloading operator to accept any type of input
+        return !(*this == otherSet);
+    }
+
+};
+
+int main(){
+    Set<int> intSet; // Creating the set
+    intSet.add(15); // Adding item to set
+    intSet.add(10);
+    intSet.add(5);
+    intSet.add(15);
+    cout << "Number of items in the set: " << intSet.Number_of_items() << endl; // Displaying number of items in the set
+    intSet.remove(10); // Removing item from set
+    intSet.remove(20); // Trying to remove an item not in the set
+    cout << "Number of items in the set after removal: " << intSet.Number_of_items() << endl; // Displaying number of items in the set after removing an item
+    int* ptrarray = intSet.toArray(); // Copying the items from the created set to a dynamic array
+    cout << "Elements in the dynamically created array: ";
+    for (size_t i = 0; i < intSet.Number_of_items(); ++i) { // Display the elements in the dynamically created array
+        cout << ptrarray[i] << " ";
+    }
+
+    cout << endl;
+    delete[] ptrarray;
+    return 0;
+}
