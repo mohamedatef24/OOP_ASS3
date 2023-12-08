@@ -1,3 +1,11 @@
+// File name: A3_Sheet2Pb1_20220282.cpp
+// Purpose: Problem (NUMBER)--> Label Generator , Creates a series of names to label files in a sequential pattern or uses the names existing in a file on the device.  
+// Author(s): Mohamed Islam Khaled
+// ID(s): 20220282
+// Section: S24
+// Date:7/12/2023
+//TA: Eng. Mohammed talaat
+
 #include <iostream>
 #include <fstream>
 #include <cstring>
